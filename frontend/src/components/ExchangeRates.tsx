@@ -49,7 +49,7 @@ const ExchangeRates = () => {
   return (
     <>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <Title style={{ marginTop: 0 }} level={4}>Exchange Rates</Title>
+        <Title style={{ marginTop: 0 }} level={4}>Latest Exchange Rates</Title>
         <Select
           loading={loading}
           onChange={handleCurrencySelection}
