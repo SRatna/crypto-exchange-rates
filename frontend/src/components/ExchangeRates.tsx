@@ -1,4 +1,5 @@
 import { Typography, Select } from 'antd';
+import ExchangeRatesTable from './ExchangeRatesTable';
 
 const { Title } = Typography;
 
@@ -16,6 +17,7 @@ const ExchangeRates = () => {
           ]}
         />
       </div>
+      <ExchangeRatesTable />
     </>
   )
 }
