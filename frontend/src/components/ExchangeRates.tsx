@@ -1,9 +1,25 @@
 import { Typography, Select } from 'antd';
 import ExchangeRatesTable from './ExchangeRatesTable';
+import { useEffect, useState } from 'react';
+import { CurrencyCode } from '../models/ExchangeRate';
 
 const { Title } = Typography;
 
 const ExchangeRates = () => {
+  const [currencyCodes, setCurrencyCodes] = useState<CurrencyCode[] | null>(null);
+
+  const fetchCurrencyCodes = async () => {
+    const currencyCodesResponse = await fetch('/api/codes');
+    const currencyCodesData: CurrencyCode[] = await currencyCodesResponse.json();
+    setCurrencyCodes(currencyCodesData);
+  }
+
+  useEffect(() => {
+    fetchCurrencyCodes()
+  }, [])
+
+  const selectCurrencyOptions = currencyCodes?.map(({ code }) => ({ value: code, label: code }));
+
   return (
     <>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -11,10 +27,7 @@ const ExchangeRates = () => {
         <Select
           placeholder="Select Currency"
           style={{ width: 180 }}
-          options={[
-            { value: 'USD', label: 'USD' },
-            { value: 'EUR', label: 'EUR' }
-          ]}
+          options={selectCurrencyOptions || []}
         />
       </div>
       <ExchangeRatesTable />
