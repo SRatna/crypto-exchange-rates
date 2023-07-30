@@ -5,11 +5,11 @@ export interface CurrencyCode {
 
 export interface ExchangeRateResponse {
   code: string;
-  rate: string;
+  rate: number;
 }
 
 export interface ExchangeRate {
   code: string;
   description: string;
-  rate: string;
+  rate: number;
 }
