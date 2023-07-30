@@ -22,6 +22,7 @@ public class LatestRateDataConfig {
         new ExchangeRate("ETH", "Ethereum", 1875),
         new ExchangeRate("DOGE", "Dogecoin", 0.08),
         new ExchangeRate("XPR", "Ripple", 0.7217),
+        new ExchangeRate("GAL", "Galxe", 1.28),
         new ExchangeRate("SOL", "Solana", 24.97));
 
     latestRateData.setExchangeRates(exchangeRates);
