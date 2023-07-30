@@ -2,10 +2,11 @@ import { Table } from 'antd';
 import { ExchangeRate } from '../models/ExchangeRate';
 
 interface PropType {
-  exchangeRates: ExchangeRate[] | null
+  exchangeRates: ExchangeRate[] | null,
+  code: string
 }
 
-const ExchangeRatesTable = ({ exchangeRates }: PropType) => {
+const ExchangeRatesTable = ({ exchangeRates, code }: PropType) => {
   const columns = [
     {
       title: 'Symbol',
@@ -22,12 +23,14 @@ const ExchangeRatesTable = ({ exchangeRates }: PropType) => {
     },
   ];
 
+  const dataSource = exchangeRates?.filter(({ code: curCode }) => curCode !== code)
+
   return (
     <Table
       style={{ marginTop: 16 }}
       rowKey="code"
       columns={columns}
-      dataSource={exchangeRates || []}
+      dataSource={dataSource || []}
       bordered
     />
   )

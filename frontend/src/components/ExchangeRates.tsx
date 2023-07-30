@@ -8,6 +8,7 @@ const { Title } = Typography;
 const ExchangeRates = () => {
   const [currencyCodes, setCurrencyCodes] = useState<CurrencyCode[] | null>(null);
   const [exchangeRates, setExchangeRates] = useState<ExchangeRate[] | null>(null);
+  const [code, setCode] = useState<string>('');
 
   const fetchCurrencyCodes = async () => {
     const response = await fetch('/api/codes');
@@ -34,6 +35,7 @@ const ExchangeRates = () => {
   }, []);
 
   const handleCurrencySelection = (code: string) => {
+    setCode(code);
     fetchLatestExchangeRates(code);
   }
 
@@ -50,7 +52,7 @@ const ExchangeRates = () => {
           options={selectCurrencyOptions || []}
         />
       </div>
-      <ExchangeRatesTable exchangeRates={exchangeRates} />
+      <ExchangeRatesTable exchangeRates={exchangeRates} code={code} />
     </>
   )
 }
