@@ -1,0 +1,7 @@
+# ** to ignore all node_modules folders and likewise with others
+**/node_modules/
+**/dist/
+**/.vscode/
+**/.gradle/
+**/bin/
+**/build/
