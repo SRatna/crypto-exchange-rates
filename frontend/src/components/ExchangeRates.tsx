@@ -1,4 +1,4 @@
-import { Typography, Select } from 'antd';
+import { Typography, Select, message } from 'antd';
 import ExchangeRatesTable from './ExchangeRatesTable';
 import { useEffect, useState, useCallback } from 'react';
 import { CurrencyCode, ExchangeRate, ExchangeRateResponse } from '../models/ExchangeRate';
@@ -10,21 +10,35 @@ const ExchangeRates = () => {
   const [exchangeRates, setExchangeRates] = useState<ExchangeRate[] | null>(null);
   const [code, setCode] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
-  const fetchCurrencyCodes = async () => {
+  const handleError = useCallback(() => {
+    messageApi.error({ content: 'Something went wrong! Please contact Admin!' });
+    setLoading(false);
+  }, [messageApi])
+
+  const fetchCurrencyCodes = useCallback(async () => {
     setLoading(true);
     const response = await fetch('/api/codes');
+    if (response.status !== 200) {
+      handleError();
+      return;
+    }
     const currencyCodesResponse: CurrencyCode[] = await response.json();
     setCurrencyCodes(currencyCodesResponse);
     if (currencyCodesResponse.length) {
       setCode(currencyCodesResponse[0].code);
     }
     setLoading(false);
-  }
+  }, [handleError])
 
   const fetchLatestExchangeRates = useCallback(async () => {
     setLoading(true);
     const response = await fetch('/api/latest/' + code);
+    if (response.status !== 200) {
+      handleError();
+      return;
+    }
     const latestRates: ExchangeRateResponse[] = await response.json();
     const exchangeRatesData: ExchangeRate[] = latestRates.map(({ code, rate }) => {
       const currency = currencyCodes?.find(({ code: curCode }) => curCode === code);
@@ -36,11 +50,13 @@ const ExchangeRates = () => {
     })
     setExchangeRates(exchangeRatesData);
     setLoading(false);
-  }, [code, currencyCodes])
+  }, [code, currencyCodes, handleError])
 
   useEffect(() => {
-    fetchCurrencyCodes();
-  }, []);
+    if (!currencyCodes) {
+      fetchCurrencyCodes();
+    }
+  }, [currencyCodes, fetchCurrencyCodes]);
 
   useEffect(() => {
     if (code) {
@@ -56,6 +72,7 @@ const ExchangeRates = () => {
 
   return (
     <>
+      {contextHolder}
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Title style={{ marginTop: 0 }} level={4}>Latest Exchange Rates</Title>
         <Select
