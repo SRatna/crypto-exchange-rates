@@ -1,6 +1,6 @@
 import { Typography, Select } from 'antd';
 import ExchangeRatesTable from './ExchangeRatesTable';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { CurrencyCode, ExchangeRate, ExchangeRateResponse } from '../models/ExchangeRate';
 
 const { Title } = Typography;
@@ -16,10 +16,13 @@ const ExchangeRates = () => {
     const response = await fetch('/api/codes');
     const currencyCodesResponse: CurrencyCode[] = await response.json();
     setCurrencyCodes(currencyCodesResponse);
+    if (currencyCodesResponse.length) {
+      setCode(currencyCodesResponse[0].code);
+    }
     setLoading(false);
   }
 
-  const fetchLatestExchangeRates = async (code: string) => {
+  const fetchLatestExchangeRates = useCallback(async () => {
     setLoading(true);
     const response = await fetch('/api/latest/' + code);
     const latestRates: ExchangeRateResponse[] = await response.json();
@@ -33,15 +36,20 @@ const ExchangeRates = () => {
     })
     setExchangeRates(exchangeRatesData);
     setLoading(false);
-  }
+  }, [code, currencyCodes])
 
   useEffect(() => {
     fetchCurrencyCodes();
   }, []);
 
+  useEffect(() => {
+    if (code) {
+      fetchLatestExchangeRates();
+    }
+  }, [code, fetchLatestExchangeRates]);
+
   const handleCurrencySelection = (code: string) => {
     setCode(code);
-    fetchLatestExchangeRates(code);
   }
 
   const selectCurrencyOptions = currencyCodes?.map(({ code }) => ({ value: code, label: code }));
@@ -51,6 +59,7 @@ const ExchangeRates = () => {
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Title style={{ marginTop: 0 }} level={4}>Latest Exchange Rates</Title>
         <Select
+          value={code}
           loading={loading}
           onChange={handleCurrencySelection}
           placeholder="Select Currency"
