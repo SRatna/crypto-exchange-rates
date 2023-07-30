@@ -1,0 +1,15 @@
+.site-layout-content {
+  min-height: calc(100vh - 180px);
+  padding: 24px;
+  margin-top: 48px;
+}
+
+.logo {
+  float: left;
+  color: white;
+  font-size: 1.25rem;
+}
+
+body {
+  margin: 0;
+}
