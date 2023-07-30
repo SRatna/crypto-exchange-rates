@@ -1,7 +1,11 @@
 import { Table } from 'antd';
+import { ExchangeRate } from '../models/ExchangeRate';
 
-const ExchangeRatesTable = () => {
+interface PropType {
+  exchangeRates: ExchangeRate[] | null
+}
 
+const ExchangeRatesTable = ({ exchangeRates }: PropType) => {
   const columns = [
     {
       title: 'Symbol',
@@ -13,27 +17,19 @@ const ExchangeRatesTable = () => {
     },
     {
       title: 'Exchange Rate',
-      dataIndex: 'rate'
-    },
-  ];
-
-  const dataSource = [
-    {
-      code: 'USD',
-      description: 'United States Dollar',
-      rate: 1.0,
-    },
-    {
-      code: 'EUR',
-      description: 'Euro',
-      rate: 1.1,
+      dataIndex: 'rate',
+      render: (rate: number) => parseFloat(rate.toFixed(6)),
     },
   ];
 
   return (
-    <>
-      <Table style={{ marginTop: 16 }} rowKey="code" columns={columns} dataSource={dataSource} bordered />
-    </>
+    <Table
+      style={{ marginTop: 16 }}
+      rowKey="code"
+      columns={columns}
+      dataSource={exchangeRates || []}
+      bordered
+    />
   )
 }
 export default ExchangeRatesTable;
